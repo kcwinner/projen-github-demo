@@ -6,7 +6,6 @@ const project = new JsiiProject({
   author: 'Ken Winner',
   authorAddress: 'kcswinner@gmail.com',
   defaultReleaseBranch: 'main',
-  jsiiFqn: 'projen.JsiiProject',
 
   devDeps: [
     'fs-extra',

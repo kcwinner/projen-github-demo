@@ -25,7 +25,10 @@ export class DemoProject extends AwsCdkTypeScriptApp {
 
     this.projectName = path.basename(process.cwd());
 
-    console.log('## Options:', options);
+    this.addCdkDependency(...[
+      '@aws-cdk/aws-sns',
+      '@aws-cdk/aws-sns-subscriptions',
+    ]);
 
     if (options.sampleCode ?? true) {
       new SampleCode(this);
@@ -44,27 +47,20 @@ class SampleCode extends Component {
   }
 
   public synthesize() {
-    console.log('## Synthesizing Demo Project ##');
-    const srcdir = path.join(this.project.outdir, this.demoProject.srcdir);
-
-    console.log('### Src Dir:', srcdir);
-
     // Check if ts files exist. If so, do NOT create sample code
-    if (fs.pathExistsSync(srcdir) && fs.readdirSync(srcdir).filter(x => x.endsWith('.ts'))) {
+    if (fs.pathExistsSync(this.demoProject.srcdir) && fs.readdirSync(this.demoProject.srcdir).filter(x => x.endsWith('.ts'))) {
       return;
     }
 
     const projectType = pascalCase(this.demoProject.projectName);
 
-    console.log('### Project Type:', projectType);
-
-    new SampleDir(this.demoProject, srcdir, {
+    new SampleDir(this.demoProject, this.demoProject.srcdir, {
       files: {
         'main.ts': this.createMainTsContents(this.demoProject.projectName, projectType),
       },
     });
 
-    const libDir = path.join(srcdir, 'lib');
+    const libDir = path.join(this.demoProject.srcdir, 'lib');
     new SampleDir(this.demoProject, libDir, {
       files: {
         [`${this.demoProject.projectName}-stack.ts`]: this.projectStackContents(this.demoProject.projectName, projectType),
@@ -72,31 +68,32 @@ class SampleCode extends Component {
     });
 
     const testCode = `import '@aws-cdk/assert/jest';
-import { ${projectType}Stack } from '../src/lib/${this.demoProject.projectName}-stack'
-import { PipelineStack } from '../src/lib/pipeline-stack'
 import { App } from '@aws-cdk/core';
+import { ${projectType}Stack } from '../src/lib/${this.demoProject.projectName}-stack'
+
 test('Basic Test', () => {
   const app = new App();
   const stack = new ${projectType}Stack(app, 'test');
   expect(stack).toHaveResource('AWS::SNS::Topic');
 });`;
 
-    const testdir = path.join(this.project.outdir, this.demoProject.testdir);
+    const testdir = path.join(this.demoProject.testdir);
     new SampleDir(this.demoProject, testdir, {
       files: {
         'main.test.ts': testCode,
       },
     });
+
   }
 
   private createMainTsContents(projectName: string, projectType: string): string {
     return `import { App } from '@aws-cdk/core';
-import { ${projectType} } from './lib/${projectName}-stack';
-import { PipelineStack } from './lib/pipeline-stack';
+import { ${projectType}Stack } from './lib/${projectName}-stack';
+
 const DEV_ACCOUNT = '${this.devAccount}';
 const PROD_ACCOUNT = '${this.prodAccount}';
 const STAGE = process.env.STAGE || 'dev'; // default to dev as the stage
-const ACCOUNT = process.env.ACCOUNT || '${this.devAccount}'; // default to dev account
+const ACCOUNT = process.env.ACCOUNT || DEV_ACCOUNT; // default to dev account
 const REGION = process.env.REGION || 'us-east-2'; // default region we are using
 const app = new App(
   {
@@ -110,7 +107,7 @@ const app = new App(
   },
 );
 
-new ${projectType}(app, \`${projectName}-\${STAGE}\`, {
+new ${projectType}Stack(app, \`${projectName}-\${STAGE}\`, {
   terminationProtection: true,
   description: 'Stack for ${projectName}',
   env: {
@@ -118,20 +115,18 @@ new ${projectType}(app, \`${projectName}-\${STAGE}\`, {
     region: REGION,
   },
 });
+
 app.synth();`;
   }
 
   private projectStackContents(projectName: string, projectType: string): string {
-    return `import * as path from 'path';
-import { Construct, Stack, StackProps, Duration } from '@aws-cdk/core';
+    return `import { Construct, Stack, StackProps } from '@aws-cdk/core';
 import { Topic } from '@aws-cdk/aws-sns';
 import { EmailSubscription } from '@aws-cdk/aws-sns-subscriptions';
-import { Alarm } from '@aws-cdk/aws-cloudwatch';
-import { SnsAction } from '@aws-cdk/aws-cloudwatch-actions';
 
 export interface ${projectType}StackProps extends StackProps { }
 
-const errorNotificationEmails = ['youremail@org.com'];
+const errorNotificationEmails = ['support@support.com'];
 
 export class ${projectType}Stack extends Stack {
   constructor(scope: Construct, id: string, props?: ${projectType}StackProps) {
