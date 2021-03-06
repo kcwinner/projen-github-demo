@@ -15,10 +15,6 @@ const project = new JsiiProject({
   deps: ['projen'],
   peerDeps: ['projen'],
 
-  // Github / Build Configuration
-  releaseToNpm: false, // TODO: disable this for now but add it back in
-  releaseWorkflow: false, // TODO: disable this for now but add it back in
-
   dependabot: false, // Disabling because it is a demo project
   mergify: false, // Disabling because it is a demo project
 

@@ -33,6 +33,7 @@ yarn-error.log*
 !/.github/pull_request_template.md
 !/.github/workflows/build.yml
 !/.github/workflows/rebuild-bot.yml
+!/.github/workflows/release.yml
 !/.npmignore
 !/.projen/deps.json
 !/.projen/tasks.json
