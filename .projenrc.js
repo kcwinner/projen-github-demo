@@ -6,11 +6,11 @@ const project = new JsiiProject({
   author: 'Ken Winner',
   authorAddress: 'kcswinner@gmail.com',
   defaultReleaseBranch: 'main',
-  jsiiFqn: "projen.JsiiProject",
+  jsiiFqn: 'projen.JsiiProject',
 
   devDeps: [
     'fs-extra',
-    '@types/fs-extra@^8' // This will break if it's on 9
+    '@types/fs-extra@^8', // This will break if it's on 9
   ],
   deps: ['projen'],
   peerDeps: ['projen'],
