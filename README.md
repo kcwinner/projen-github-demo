@@ -4,14 +4,10 @@ Releasing to private GitHub packages is super simple with the new `npmRegistryUr
 
 ## Steps To Create
 
-* Create new project
-```bash
-npx projen new jsii
-```
-
-* Set the package name using `@scope/package-name`
+* Create new project with `npx projen new jsii`
+* Set the package name in `.projecrc.js` using `@scope/package-name`
   * e.g. `name: '@kcwinner/projen-github-demo'`
-* Set npm dist tag and npm registry
+* Set npm dist tag and npm registry in `.projecrc.js`
   * `npmDistTag: 'latest'`
   * `npmRegistryUrl: 'https://npm.pkg.github.com'`
 * Generate personal access token for the repository
