@@ -39,7 +39,7 @@ export class DemoProject extends AwsCdkTypeScriptApp {
 class SampleCode extends Component {
   private readonly demoProject: DemoProject;
   private readonly devAccount = '111111111111';
-  private readonly prodAccount = '222222222222'
+  private readonly prodAccount = '222222222222';
 
   constructor(project: DemoProject) {
     super(project);
@@ -83,7 +83,6 @@ test('Basic Test', () => {
         'main.test.ts': testCode,
       },
     });
-
   }
 
   private createMainTsContents(projectName: string, projectType: string): string {

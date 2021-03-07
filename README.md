@@ -19,6 +19,8 @@ Releasing to private GitHub packages is super simple with the new `npmRegistryUr
 
 ## Test Locally
 
+*Disclaimer* - there is a [small bug](https://github.com/projen/projen/issues/597) with testing external modules locally
+
 * Build with `yarn build`
 * In a separate directory: `npx projen new --from ~/path/to/your/dist/js/package-name@x.x.x.jsii.tgz`
 
@@ -30,3 +32,9 @@ Releasing to private GitHub packages is super simple with the new `npmRegistryUr
 * Validate you can see the project
   * `npm view @yourorg/package-name`
 * `npx projen new --from @yourorg/package-name`
+
+
+## References
+
+* [projen](https://github.com/projen/projen)
+* [Configuring npm for use with GitHub Packages](https://docs.github.com/en/packages/guides/configuring-npm-for-use-with-github-packages)
